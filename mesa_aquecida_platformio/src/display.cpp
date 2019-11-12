@@ -1,4 +1,4 @@
-//By Lucas Seara Manoel - LPAE
+//By Lucas Seara Manoel - LPAE - IFSC
 #include <Arduino.h>
 #include "display.h"
 
@@ -29,14 +29,15 @@ void Dysplay::init_draw()
     {
         this->_init_draw();
     } while(u8g.nextPage());
-    delay(2000); 
+    // delay(600); 
 }
 
 void Dysplay::_init_draw()
 {
     u8g.setFont(u8g_font_9x15B);
-    u8g.drawStr(0, 10, "display OLED");
-    u8g.drawStr(30, 30, "by Lucas");
+    u8g.drawStr(0, 10, "load");
+    u8g.drawStr(10, 30, " display...");
+    u8g.drawStr(30, 60, "by Lucas");
     init_draw_flag=0; 
 }
 
