@@ -39,12 +39,17 @@ const uint16_t temp[] PROGMEM = {941,939,938,936,935,933,932,930,928,927,925,924
                 251,248,246,244,241,239,237,234,232,230,227,225,223,220,218,215, //480
                 213,211,208,206,203};
 
+uint16_t ref;
+uint16_t tmp;
+uint16_t erro;
+uint8_t dutycycle;
 
 uint16_t TempGet(){
 
   uint16_t data = 0, valor;
 
-  valor = analogRead(A1);
+  valor =  2000;
+  // valor = analogRead(A1);
 
   if(valor < ADC_INF){
     data = pgm_read_word(&temp[0]);
@@ -54,39 +59,46 @@ uint16_t TempGet(){
     data = pgm_read_word(&temp[valor - ADC_INF]);
   }
 
-  return data;
+  return 40;
 }
 
 Dysplay display_1;
 
 void setup()
-{
+{  
     Serial.begin(9600);
     pinMode(outputpin, OUTPUT);
-    display_1 = Dysplay();   
+    display_1 = Dysplay();
+    ref = 0;
+    tmp = 0;
+    erro = 0;
+    dutycycle = 0;   
 }
  
 void loop()
 {
-    uint16_t ref = 820;
-    uint16_t temp = TempGet();
+    ref++;
+    tmp = TempGet();
 
     Serial.print("Temperatura: ");
-    Serial.print(temp);
+    Serial.print(tmp);
     Serial.println(" graus");
     Serial.println("");
-    if(temp < ref){
-        digitalWrite(outputpin, HIGH);
-        display_1.set_power_flag(0xff);
-    }
-    else {
-        digitalWrite(outputpin, LOW);
-        display_1.set_power_flag(0x00);
-    }
-    
-    display_1.draw(temp, ref);
 
-    delay(5000);
+    if(tmp < ref) erro = ref - tmp;
+    else erro = 0;
+    if(erro>255) erro = 255;
+    dutycycle = erro;
+    
+    for(uint16_t i=0; i<256; i++)
+    {  
+      if(i > dutycycle) digitalWrite(outputpin, LOW);
+      else digitalWrite(outputpin, HIGH);  
+      // delay(1);
+    }
+    if(erro>0) display_1.set_power_flag(0xff);
+    else display_1.set_power_flag(0x00);  
+    display_1.draw(tmp, ref);      
 }
 
 
