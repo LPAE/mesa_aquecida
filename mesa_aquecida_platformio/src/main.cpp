@@ -86,7 +86,7 @@ void loop()
     
     display_1.draw(temp, ref);
 
-    delay(100);
+    delay(5000);
 }
 
 
