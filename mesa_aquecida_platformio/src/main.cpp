@@ -48,8 +48,8 @@ uint16_t TempGet(){
 
   uint16_t data = 0, valor;
 
-  valor =  2000;
-  // valor = analogRead(A1);
+  // valor =  2000;
+  valor = analogRead(A1);
 
   if(valor < ADC_INF){
     data = pgm_read_word(&temp[0]);
@@ -59,7 +59,7 @@ uint16_t TempGet(){
     data = pgm_read_word(&temp[valor - ADC_INF]);
   }
 
-  return 40;
+  return data - 100;
 }
 
 Dysplay display_1;
@@ -77,7 +77,7 @@ void setup()
  
 void loop()
 {
-    ref++;
+    ref=1100;
     tmp = TempGet();
 
     Serial.print("Temperatura: ");
@@ -85,7 +85,7 @@ void loop()
     Serial.println(" graus");
     Serial.println("");
 
-    if(tmp < ref) erro = ref - tmp;
+    if(tmp < ref) erro = 30*(ref - tmp);
     else erro = 0;
     if(erro>255) erro = 255;
     dutycycle = erro;
